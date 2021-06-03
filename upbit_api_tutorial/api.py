@@ -64,7 +64,29 @@ class Client:
         parameters = {"market": market}
         headers = self._get_authorization_headers(parameters)
         return requests.get(url, parameters, headers=headers).json()
-        
+
+    def order(self, market, side, volume, price, ord_type, identifier=None):
+        url = "https://api.upbit.com/v1/orders"
+
+        parameters = {
+            "market": market,
+            "side": side,
+            "volume": volume,
+            "price": price,
+            "ord_type": ord_type,
+        }
+        if identifier is not None:
+            parameters["identifier"] = identifier
+
+        headers = self._get_authorization_headers(parameters)
+        return requests.post(url, parameters, headers=headers).json()
+
+    def buy(self, market, volume, price, ord_type, identifier=None):
+        return self.order(market, "bid", volume, price, ord_type, identifier)
+
+    def sell(self, market, volume, price, ord_type, identifier=None):
+        return self.order(market, "ask", volume, price, ord_type, identifier)
+
 
 class InvalidKeyError(Exception):
     pass
